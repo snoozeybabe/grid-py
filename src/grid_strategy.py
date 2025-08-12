@@ -3,6 +3,8 @@ from typing import List
 import numpy as np
 
 class GridScalperBT(Strategy):
+
+    #Need to add shorts if we use leverage
     level_each_side : int = 5
     step_k: float = 0.6
     min_step: float = 0.0
@@ -42,16 +44,28 @@ class GridScalperBT(Strategy):
     
     def _place_grid(self, center : float, step : float):
         buys, sells = self._build_levels(center, step)
+        price = float(self.data.Close[-1])
+        available_cash = self._broker._cash
+        total_cost_estimate = sum(lv* self.size for lv in buys)
+        if available_cash * 0.9 < total_cost_estimate:
+            print(f"Insufficient cash: need ~${total_cost_estimate:.0f}, have ${available_cash:.0f}")
+            return
         for lv in buys:
             tp = lv + step * self.stop_steps
             sl = lv - (self.stop_steps * step) if self.stop_steps else None
-            o = self.buy(size=self.size, limit=lv, tp=tp,sl=sl)
+            order_size = abs(self.size)
+            if order_size * lv < 1.0:
+                continue
+            o = self.buy(size=order_size, limit=lv, tp=tp,sl=sl)
             self.open_orders.append(o)
         if self.allow_shorts:
             for lv in sells:
                 tp = lv - step 
                 sl = lv + (self.stop_steps * step) if self.stop_steps else None
-                o = self.sell(size=self.size, limit=lv, tp=tp,sl=sl)
+                order_size = abs(self.size)
+                if order_size * lv < 1.0:
+                    continue
+                o = self.sell(size=order_size, limit=lv, tp=tp,sl=sl)
                 self.open_orders.append(o)
     def _should_recenter(self,price : float, center : float, atr : float) -> bool:
         if np.isnan(self.center_ref):
