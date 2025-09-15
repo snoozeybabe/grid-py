@@ -1,0 +1,15 @@
+Metadata-Version: 2.4
+Name: grid_py
+Version: 0.1
+Requires-Python: >=3.12
+License-File: LICENSE
+Requires-Dist: ccxt
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: matplotlib
+Requires-Dist: pandas-ta
+Requires-Dist: backtesting
+Requires-Dist: python-dotenv
+Dynamic: license-file
+Dynamic: requires-dist
+Dynamic: requires-python

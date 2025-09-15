@@ -5,10 +5,13 @@ import pandas as pd
 import pandas_ta as ta
 import ccxt
 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 LIVE = False
-EXCHANCE_ID="binance"
-SYMBOL="BTC/USDT"
+EXCHANCE_ID="bitget"
+SYMBOL="XRP/USDT:USDT"
 TIMEFRAME="1m"
 LEVEL_EACH_SIDE=4
 STEP_K=0.6
@@ -34,10 +37,30 @@ def fetch_latest_df(ex,symbol=SYMBOL,timeframe=TIMEFRAME,limit=100):
     return df
 
 def main():
-    ex = getattr(ccxt,EXCHANCE_ID)({"enableRateLimit" : True})
+
+    print("======Vars========")
+    print(os.getenv("BITGET_API_KEY"))
+    print("======Vars========")
+    
+    #ex = getattr(ccxt,EXCHANCE_ID)({"enableRateLimit" : True, "apiKey": os.getenv("BITGET_API_KEY"), "secret": os.getenv("BITGET_API_SECRET"), "password": os.getenv("BITGET_API_PASSPHRASE")})
+    ex = ccxt.bitget({
+        "enableRateLimit": True,
+        "apiKey": os.getenv("BITGET_API_KEY"),
+        "secret": os.getenv("BITGET_API_SECRET"),
+        "password": os.getenv("BITGET_API_PASSPHRASE"),
+        "options" : {
+            "defaultType": "swap"
+        }
+    })
     # ex.set_sandbox_mode(True)  # Uncomment if supported and you want testnet
     # ex.apiKey, ex.secret = os.getenv("API_KEY"), os.getenv("API_SECRET")  # Ensure keys set if LIVE
     print("Here")
+
+
+    print("===========Account infos==========")
+    print(f"Balance = {ex.fetch_balance()}")
+    #print(f"Maket : {ex.fetch_markets()}")
+    print("==================================")
     while True:
         try:
             df =fetch_latest_df(ex,SYMBOL,TIMEFRAME,limit=100)
@@ -56,6 +79,7 @@ def main():
             for lv in buys:
                 p = rprice(lv)
                 print(f"Plan BUY limit at {p}, qty={qty}")
+                ex.create_order(SYMBOL, type="limit", side="buy", price='2.9600', amount='2')
                 if LIVE:
                     try:
                         ex.create_order(SYMBOL, type="limit", side="buy", price=p, amount=qty)

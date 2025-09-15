@@ -34,7 +34,7 @@ def load_csv(path: str) -> pd.DataFrame:
     df = df[["open","high","low","close","volume"]]
     return df
 
-def fetch_ohlcv_ccxt(exchange_id: str = "binance", symbol: str = "BTC/USDT", timeframe: str = "1m", limit: int = 1000):
+def fetch_ohlcv_ccxt(exchange_id: str = "bitget", symbol: str = "BTC/USDT:USDT", timeframe: str = "1m", limit: int = 1000):
     """
     Fetch OHLCV via ccxt and return a preprocessed DataFrame with UTC index and OHLCV columns.
     Note: Requires network access; exchanges may rate-limit.

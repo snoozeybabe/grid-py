@@ -2,6 +2,6 @@ ccxt
 pandas
 numpy
 matplotlib
-pandas-ta 
+pandas-ta
 backtesting
 python-dotenv

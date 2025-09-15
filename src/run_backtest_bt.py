@@ -20,7 +20,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--csv', type=str, default=None, help='Path to CSV file')
     parser.add_argument('--ccxt', action='store_true', help='Use CCXT to fetch data instead of csv')
-    parser.add_argument("--exchange", type=str, default="binance", help="Exchange to use for CCXT")
+    parser.add_argument("--exchange", type=str, default="bitget", help="Exchange to use for CCXT")
     parser.add_argument("--symbol", type=str, default="BTC/USDT", help="Symbol to use for CCXT")
     parser.add_argument("--timeframe", type=str, default="1m", help="Timeframe to use for CCXT")
     parser.add_argument("--limit", type=int,default=1000)
